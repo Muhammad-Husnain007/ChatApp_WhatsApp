@@ -21,7 +21,6 @@ const createChat = asyncHandler(async (req, res) => {
     const user1 = await User.findById(participant1).populate('contacts.contact');
     const user2 = await User.findById(participant2).populate('contacts.contact');
 
-    // Ensure user1 and user2 are not null
     if (!user1 || !user2) {
         throw new ApiError(400, "One or both users do not exist");
     }
@@ -35,13 +34,11 @@ const createChat = asyncHandler(async (req, res) => {
     const isUser1InUser2Contacts = user2Contacts.includes(participant1PhoneNumber);
     const isUser2InUser1Contacts = user1Contacts.includes(participant2PhoneNumber);
 
-    // Check if either one or both conditions are true
     if (!isUser1InUser2Contacts && !isUser2InUser1Contacts) {
         throw new ApiError(400, "At least one participant must be in the other's contact list");
     }
-
     const chat = await Chat.create({ participants });
-
+    
     return res.status(200).json(
         new ApiResponse(200, chat, "Chat created successfully")
     );
@@ -61,6 +58,24 @@ const getAllChats = asyncHandler(async (req, res) => {
     }
 });
 
+const participantsExist = asyncHandler(async (req, res) => {
+    try {
+        const { participants } = req.body;
+    
+        const existingChat = await Chat.findOne({
+          participants: { $all: participants }
+        });
+    
+        if (existingChat) {
+          return res.status(200).json({ success: true, data: existingChat });
+        } else {
+          return res.status(200).json({ success: false, message: 'No chat found' });
+        }
+      } catch (error) {
+        console.error('Error finding chat:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
+      }
+}); 
 
 const getByIdChat = asyncHandler(async (req, res) => {
     try {
@@ -68,7 +83,7 @@ const getByIdChat = asyncHandler(async (req, res) => {
         const chat = await Chat.findById(chatId);
 
         if (!chat) {
-            throw new ApiError(404, "User not found");
+            throw new ApiError(404, "Chat not found");
         }
 
         return res.status(200)
@@ -84,7 +99,7 @@ const getByIdChat = asyncHandler(async (req, res) => {
 
 const deleteChat = asyncHandler(async (req, res) => {
     try {
-        const {chatId} = req.params
+        const { chatId } = req.params;
         const chat = await Chat.findByIdAndDelete(chatId);
         return res.status(200)
             .json(new ApiResponse(
@@ -101,5 +116,6 @@ export {
     createChat,
     getAllChats,
     getByIdChat,
-    deleteChat
-}
+    deleteChat,
+    participantsExist
+};

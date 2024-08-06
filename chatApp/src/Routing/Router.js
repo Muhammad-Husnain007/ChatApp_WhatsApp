@@ -17,11 +17,10 @@ import HomeRoutes from '../Home/HomeRoutes';
 import OpenSetting from '../Home/open.setting';
 import UploadProfile from '../Home/upload.profile';
 import UserAbout from '../Home/SendMessegeScreens/UserAbout';
-
 const Stack = createNativeStackNavigator();
 
 const StackScreen = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}  initialRouteName='VerifyAccount'>
+  <Stack.Navigator screenOptions={{ headerShown: false }}  initialRouteName='AgreeContinue'>
     <Stack.Screen name="AgreeContinue" component={AgreeContinue} />
     <Stack.Screen name="VerifyAccount" component={VerifyAccount} />
     <Stack.Screen name="EnterOTP" component={EnterOtp} />
@@ -34,6 +33,7 @@ const StackScreen = () => (
     <Stack.Screen name="UploadProfile" component={UploadProfile} />
     <Stack.Screen name="UserAbout" component={UserAbout} />
   </Stack.Navigator>
+
 );
 
 // const TabScreen = () => {

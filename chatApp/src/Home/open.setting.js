@@ -1,11 +1,17 @@
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import React from 'react'
 import { View, Text, ScrollView, TextInput, StyleSheet, Image, TouchableOpacity, BackHandler } from 'react-native'
 
 const OpenSetting = () => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const {userId, token, phoneNumber} = route.params;
+  console.log("Setting:   ",userId)
+  console.log("Token:   ",token)
+  console.log("phoneNumber Setting:   ",phoneNumber)
+
   const uploadProfile = () => {
-    navigation.navigate("UploadProfile")
+    navigation.navigate("UploadProfile", {phoneNumber: phoneNumber})
   }
   return (
     <ScrollView style={styles.mainView}>

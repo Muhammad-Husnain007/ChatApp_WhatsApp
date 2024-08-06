@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, BackHandler } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Chats from './Chats';
 import Groups from './Groups';
@@ -14,13 +14,16 @@ const Navbar = ({ navigation }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigator = useNavigation();
-
+  const route = useRoute()
+  const {userId, token, phoneNumber} = route.params;
+  console.log("Navbar:   ",userId)
+  console.log("PhoneNumber Navbar:   ",phoneNumber)
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
         if (isSearchActive) {
           setIsSearchActive(false);
-          return true; // Prevent default behavior (closing the app)
+          return true;
         }
         return false;
       };
@@ -109,7 +112,7 @@ const Navbar = ({ navigation }) => {
       >
         <TouchableOpacity style={styles.modalOverlay} onPress={closeModal}>
           <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.modalItem} onPress={() => { navigator.navigate("OpenSetting") }}>
+            <TouchableOpacity style={styles.modalItem} onPress={() => { navigator.navigate("OpenSetting",{ userId: userId, token: token, phoneNumber: phoneNumber,}) }}>
               <Text style={styles.modalText}>Settings</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalItem} onPress={() => { /* Add your functionality here */ }}>
@@ -141,10 +144,10 @@ const Navbar = ({ navigation }) => {
           },
         })}
       >
-        <Tab.Screen name="Groups" component={Groups} />
-        <Tab.Screen name="Chats" component={Chats} />
-        <Tab.Screen name="Updates" component={Updates} />
-        <Tab.Screen name="Calls" component={Calls} />
+        <Tab.Screen name="Groups" initialParams={{ userId, token }} component={Groups} />
+        <Tab.Screen name="Chats" initialParams={{ userId, token }} component={Chats} />
+        <Tab.Screen name="Updates" initialParams={{ userId, token }} component={Updates} />
+        <Tab.Screen name="Calls" initialParams={{ userId, token }} component={Calls} />
       </Tab.Navigator>
     </ScrollView>
   );

@@ -9,11 +9,8 @@ const AddUser = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const navigation = useNavigation();
   const route = useRoute()
-  const {userId} = route.params
-
-/////////////// TOKEN ///////////=============
-
-/////////////// TOKEN ENDED ///////////=============
+  const {userId, token} = route.params
+  console.log(userId, token)
 
 const saveUser = async () => {
   try {
@@ -24,9 +21,13 @@ const saveUser = async () => {
             firstName,
             lastName,
             phoneNumber,
-          }). then( response => {
+          },
+          { headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }). then( response => {
             console.log('Data posted successfully:', response.data);
-            navigation.navigate('Contact')
+            navigation.navigate('Contact', {userId: userId})
           }) 
       } catch (error) {
       console.error('Error posting data:', error.message);

@@ -159,8 +159,10 @@ const VerifyAccount = () => {
         phoneNumber,
       })
       .then(response => {
-        navigation.navigate('Contact', { userId: response.data.data.user._id });
-        console.log(response.data)
+        navigation.navigate('Navbar', { userId: response.data.data.user._id, 
+          token: response.data.data.accessToken,
+          phoneNumber: response.data.data.user.phoneNumber,});
+          console.log(response.data.data.user.phoneNumber)
       })
     .catch(error => {
       console.error('This is error::::::',error);

@@ -14,10 +14,10 @@ const contactSchema = new Schema({
         type: Number,
         required: true,
     },
-    user: {
+    user: [{
         type: Schema.Types.ObjectId,
         ref: "User"
-    }
+    }]
 
 }, { timestamps: true });
 

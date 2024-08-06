@@ -97,11 +97,23 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
         for (const user of users) {
             for (const contactObj of user.contacts) {
-                // Add null check
                 if (contactObj.contact && !contactObj.exists) {
-                    const contactUser = await User.findOne({ phoneNumber: contactObj.contact.phoneNumber });
+                    const contactUser = await User.findOne({ 
+                        phoneNumber: contactObj.contact.phoneNumber 
+                    });
+
                     if (contactUser) {
                         contactObj.exists = true;
+                        contactObj.contact = contactUser._id; 
+                    }
+                } 
+                else if (contactObj.exists && contactObj.contact.user == null) {
+                    const contactUser = await User.findOne({ 
+                        phoneNumber: contactObj.contact.phoneNumber 
+                    });
+
+                    if (contactUser) {
+                        contactObj.contact.user = contactUser._id;
                     }
                 }
             }
@@ -118,7 +130,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
     }
 });
 
-
 const getByIdUser = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.params;
@@ -133,17 +144,24 @@ const getByIdUser = asyncHandler(async (req, res) => {
                 const contactUser = await User.findOne({ phoneNumber: contactObj.contact.phoneNumber });
                 if (contactUser) {
                     contactObj.exists = true;
+                    contactObj.contact.user = contactUser._id; // Correct this line
+                }
+            } 
+
+            if (contactObj.exists && contactObj.contact.user === null) {
+                const contactUser = await User.findOne({ phoneNumber: contactObj.contact.phoneNumber });
+                if (contactUser) {
+                    contactObj.contact.user = contactUser._id;
                 }
             }
         }
         await user.save();
 
-        return res.status(200)
-            .json(new ApiResponse(
-                200,
-                user,
-                "User retrieved successfully"
-            ));
+        return res.status(200).json(new ApiResponse(
+            200,
+            user,
+            "User retrieved successfully"
+        ));
     } catch (error) {
         throw new ApiError(500, error?.message || "Something went wrong");
     }

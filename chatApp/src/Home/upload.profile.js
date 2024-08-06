@@ -1,9 +1,12 @@
 import React from 'react'
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 const UploadProfile = () => {
     const navigation = useNavigation()
+    const route = useRoute()
+    const {userId, phoneNumber} = route.params;
+    console.log("Setting Upload:   ",phoneNumber)
     return (
         <ScrollView style={styles.mainView}>
             <View style={styles.profileNav}>
@@ -67,7 +70,7 @@ const UploadProfile = () => {
                 </View>
                 <View style={{position: 'relative', top: 25, left: 45,}}>
                     <Text>Phone</Text>
-                    <Text>+92 33368516534</Text>
+                    <Text>+92 {phoneNumber}</Text>
                 </View>
             </View>
 
